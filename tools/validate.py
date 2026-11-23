@@ -34,6 +34,12 @@ for r in cat:
         errors.append(f"{rid}: okänd status '{r.get('status')}'")
     if r.get("provider_type") not in PTYPES:
         errors.append(f"{rid}: okänd provider_type '{r.get('provider_type')}'")
+    for k, v in r.items():
+        if k == "formats":
+            if v is not None and not isinstance(v, list):
+                errors.append(f"{rid}: 'formats' ska vara en lista")
+        elif v is not None and not isinstance(v, str):
+            errors.append(f"{rid}: fältet '{k}' ska vara text, är {type(v).__name__}")
     if r.get("url") and not str(r["url"]).startswith("http"):
         errors.append(f"{rid}: url börjar inte med http")
 
