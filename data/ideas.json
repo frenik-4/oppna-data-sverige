@@ -1,0 +1,1180 @@
+[
+ {
+  "id": "I01",
+  "title": "Adressens riskdeklaration",
+  "pitch": "Skriv en adress och få en 'besiktning av marken': radon, jordart/skredrisk, grundvatten, översvämning, buller, avverkning och fornlämningar i närheten.",
+  "problem": "Bostadsköpare får idag en mäklarbeskrivning och Hemnet-annons men inga markrisker; motsvarande 'environmental search' kostar pengar i UK och saknas helt i Sverige. Besiktningsmän kostar 8–15 kkr och tittar inte på geodata.",
+  "sources": [
+   "C125",
+   "C136",
+   "C163",
+   "C131",
+   "C134",
+   "H063",
+   "C118",
+   "H067",
+   "D196",
+   "C151",
+   "F327",
+   "C138",
+   "C164"
+  ],
+  "how": "Geokoda adressen (C125/H018) → koordinat SWEREF99. Punktfråga mot SGU jordart (lera/silt=skred-/sättningsrisk), markradon, grundvattennivå i närmaste rör, markhöjd (lågpunkt i GSD-höjddata = skyfallsrisk), ÅDT på närmaste väg (bulleruppskattning), Skogsstyrelsens avverkningsanmälningar inom 500 m och fornlämningar. Energideklarationen (C164) joinas på fastighetsbeteckning.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "privatperson",
+  "category": "Boende & fastighet"
+ },
+ {
+  "id": "I02",
+  "title": "Energideklarations-jämföraren",
+  "pitch": "Se om ditt hus drar mer el än likvärdiga hus i samma kommun med samma byggår och uppvärmningssätt – och vad en värmepump/tilläggsisolering faktiskt brukar ge.",
+  "problem": "Husägare vet sällan om 140 kWh/m² är bra eller dåligt; energirådgivare och säljare av värmepumpar (t.ex. 1Komma5, Greenely) ger partisk bild. Boverkets data är gratis men ingen gör percentiler.",
+  "sources": [
+   "C164",
+   "G459",
+   "C177",
+   "D230",
+   "A000"
+  ],
+  "how": "Gruppera energideklarationer per kommun × byggårsdecennium × uppvärmningssätt och räkna percentiler. Normalisera med graddagar från SMHI-klimatnormaler (C177) för orten. Jämför byggnader som deklarerats flera gånger före/efter byte av uppvärmning för att uppskatta faktisk effekt av åtgärder. Elpriskollen ger kr/år.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "privatperson",
+  "category": "Boende & fastighet"
+ },
+ {
+  "id": "I03",
+  "title": "Grannskapsprofil per DeSO utan mäklarspråk",
+  "pitch": "Ett faktablad per bostadsområde: åldersstruktur, inkomst, skolresultat, restid till jobbcentra, brott, bredband, mobiltäckning – med jämförelse mot kommunen.",
+  "problem": "Booli/Hemnet visar pris men lite om området; betaltjänster som Ratsit/Mrkoll visar individdata (integritetsproblem). SCB-data finns men är svår att få per DeSO.",
+  "sources": [
+   "A004",
+   "A000",
+   "A008",
+   "A002",
+   "B065",
+   "D202",
+   "E283",
+   "D242",
+   "D244",
+   "H066"
+  ],
+  "how": "DeSO-polygon (A004/H066) är nyckeln. SCB-tabeller på DeSO (befolkning, inkomst), skolor geokodade från Skolenhetsregistret, Brottsplatskartan-händelser rumsligt aggregerade, PTS-täckning per ruta. Restid via ResRobot från DeSO-centroid till närmaste stads centrum kl 07:30.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "privatperson",
+  "category": "Boende & fastighet"
+ },
+ {
+  "id": "I04",
+  "title": "Bygglovs- och detaljplanebevakare för min radie",
+  "pitch": "Få notis när det kommer detaljplan, bygglov, avverkning, vindkraft eller ny väg inom X km från ditt hem.",
+  "problem": "Grannar upptäcker ofta planer för sent (överklagandetid 3 veckor). Kommunernas anslagstavlor är spridda; det finns betaltjänster för byggbranschen (t.ex. Byggfakta, Ingenjörsnytt-projektbevakning) som kostar tusentals kr/år.",
+  "sources": [
+   "G409",
+   "C165",
+   "C151",
+   "H057",
+   "D257",
+   "D260",
+   "E313",
+   "C125"
+  ],
+  "how": "Användaren anger koordinat + radie. Pollar Boverkets planregister, kommunala bygglovsflöden, Skogsstyrelsens avverkningsanmälningar (geometri), Vindbrukskollen och Trafikverkets planerade vägobjekt. Rumslig join (PostGIS ST_DWithin) och diff mot förra körningen → push/e-post/HA-notis.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "privatperson",
+  "category": "Boende & fastighet"
+ },
+ {
+  "id": "I05",
+  "title": "Bostadsrättsföreningens hälsokoll",
+  "pitch": "Mata in en BRF:s organisationsnummer och få skuld/m², avgiftstrend, energiklass och byggår – utan att betala Allabolag Pro eller BRF-analystjänster.",
+  "problem": "Köpare betalar för BRF-analyser (t.ex. Booli/'BRF-kollen', Allabolag Pro, UC) eller måste läsa PDF-årsredovisningar själva.",
+  "sources": [
+   "A023",
+   "A024",
+   "A025",
+   "C164",
+   "C125",
+   "A013"
+  ],
+  "how": "Organisationsnummer → Bolagsverkets grunddata + iXBRL-årsredovisning (A025) där lån, avgifter och yta parsas. Fastighetsbeteckning från årsredovisning/adress → energideklaration. Räntekänslighet: lån × Riksbanksräntescenarier (A013) ger 'avgift om räntan +2 pp'.",
+  "difficulty": "hög",
+  "value": "hög",
+  "audience": "privatperson",
+  "category": "Boende & fastighet"
+ },
+ {
+  "id": "I06",
+  "title": "Hyresrättskön-optimeraren (Väst)",
+  "pitch": "Visa var i Boplats-regionen dina ködagar faktiskt räcker, kombinerat med restid till jobbet.",
+  "problem": "Bostadssökande i Göteborg står i kö i åratal utan att veta var chanserna finns; Boplats visar inga historiska krav-nivåer.",
+  "sources": [
+   "G424",
+   "D208",
+   "D202",
+   "A004",
+   "A000"
+  ],
+  "how": "Skrapa/följ Boplats-annonser över tid och logga erforderlig kötid per område. Geokoda till DeSO, beräkna restid via Västtrafik-API till användarens arbetsplats. Presentera 'hyra × restid × kötid'-frontier.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "privatperson",
+  "category": "Boende & fastighet"
+ },
+ {
+  "id": "I07",
+  "title": "Upphandlingsradar med vinnaranalys",
+  "pitch": "Gratis bevakning av svenska upphandlingar (TED + under tröskel där det finns) filtrerat på CPV och region, plus historik över vem som brukar vinna och till vilket pris.",
+  "problem": "Småföretag betalar 5–30 kkr/år för Visma Opic, Mercell/Tendsign eller e-Avrop-bevakning. Upphandlingsmyndigheten konstaterar själv att nationell annonsdatabas saknas.",
+  "sources": [
+   "H024",
+   "E300",
+   "A034",
+   "E299",
+   "A023",
+   "A025"
+  ],
+  "how": "TED API v3 ger annonser och tilldelningar med organisationsnummer för köpare och vinnare. Joina vinnare mot Bolagsverket (storlek, SNI, säte) och årsredovisningar (omsättning). Upphandlingsmyndighetens statistikdatabas fyller luckor. Användaren sparar CPV-filter + län → daglig digest.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "företag",
+  "category": "Företag & affärer",
+  "exists_free": "Open Opps / PublicBI (gratis TED-sök) – men saknar svensk vinnaranalys kopplad till Bolagsverket och regionfilter på kommunnivå."
+ },
+ {
+  "id": "I08",
+  "title": "Leverantörsrisk-kollen (gratis 'mini-UC')",
+  "pitch": "Slå upp en leverantör: status, styrelsebyten, betalningsanmärkningsindikatorer på branschnivå, sanktionslistor, LEI-koncern och senaste årsredovisningens nyckeltal.",
+  "problem": "Kreditupplysningar via UC, Creditsafe, Bisnode/Dun & Bradstreet eller Allabolag Pro kostar per uppslag eller abonnemang; småföretag gör ofta ingen kontroll alls.",
+  "sources": [
+   "A023",
+   "A024",
+   "A025",
+   "H022",
+   "H023",
+   "E293",
+   "A026",
+   "E306"
+  ],
+  "how": "Organisationsnummer är nyckel genom allt. LEI-relationer (H022) ger moderbolag, OpenSanctions för sanktions-/PEP-träff på företrädare, Konkurrensverkets beslut, FI:s insynsregister. iXBRL-årsredovisning ger soliditet/kassalikviditet. Kronofogdens aggregat ger branschens/kommunens baslinje (individdata saknas – var tydlig).",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "företag",
+  "category": "Företag & affärer"
+ },
+ {
+  "id": "I09",
+  "title": "Etableringskartan för småföretagare",
+  "pitch": "Hitta var en ny frisör/café/elfirma har kundunderlag: befolkning och köpkraft per DeSO minus befintliga konkurrenter (SNI) och fotflöde.",
+  "problem": "Etableringsanalyser från konsulter eller betaltjänster (t.ex. Geodata-företag, Retail-analyser) kostar tiotusentals kronor.",
+  "sources": [
+   "A024",
+   "A004",
+   "A008",
+   "A000",
+   "H019",
+   "D246",
+   "D199"
+  ],
+  "how": "Bolagsverkets bulkfil med SNI och adress geokodas → konkurrentdensitet per DeSO. SCB inkomst/befolkning per DeSO ger efterfrågan. OSM (Overpass) kompletterar butiker. Hållplatsfrekvens från GTFS och cykelräknare som proxy för passantflöde.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "företag",
+  "category": "Företag & affärer"
+ },
+ {
+  "id": "I10",
+  "title": "Rekryteringsläget per yrke och pendlingsomland",
+  "pitch": "Visar för en arbetsgivare hur många annonser som konkurrerar om samma yrke inom 45 min restid, utbildade som examineras i närheten och prognosen.",
+  "problem": "HR-avdelningar köper arbetsmarknadsanalys (t.ex. Lightcast/Emsi, Universum) eller gissar.",
+  "sources": [
+   "B050",
+   "B052",
+   "B053",
+   "B061",
+   "B063",
+   "B071",
+   "D202",
+   "A000"
+  ],
+  "how": "JobTech-taxonomin (B053) normaliserar yrken. Historiska annonser per kommun → konkurrenstryck över tid. Planerade utbildningar (yrkeshögskola, gymnasium) med orter → kommande utbud. Pendlingsomland via ResRobot isokron från arbetsplatsen.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "företag",
+  "category": "Jobb & utbildning"
+ },
+ {
+  "id": "I11",
+  "title": "Insiderhandel × pressmeddelanden × blankning",
+  "pitch": "Tidslinje per börsbolag där insynsaffärer, blankningspositioner och pressmeddelanden visas tillsammans – larm när insiders köper samtidigt som blankare ökar.",
+  "problem": "Privata investerare betalar för Börsdata, Holdings/Insiderscreener-premium eller Placera Plus för liknande vyer.",
+  "sources": [
+   "A026",
+   "A027",
+   "A042",
+   "A043",
+   "A044",
+   "H022"
+  ],
+  "how": "Joina på emittentens namn/LEI/ISIN: FI:s insynsregister (transaktionsdag), blankningsregistret (net short %), MFN/Cision pressmeddelanden (tid). Kurs från Nasdaq Nordic JSON. Händelsestudie: genomsnittlig kursrörelse efter insiderköp per bolag.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "privatperson",
+  "category": "Företag & affärer"
+ },
+ {
+  "id": "I12",
+  "title": "Offentlig-sektor-säljkalender",
+  "pitch": "Förutse när en kommun/region kommer att upphandla igen: avtalstider från tidigare tilldelningar + budgetbeslut + nämndprotokoll.",
+  "problem": "Säljare på B2G-marknaden använder Mercell/Visma Opic Analytics eller Tendium (betal) för att planera.",
+  "sources": [
+   "H024",
+   "A034",
+   "A011",
+   "E313",
+   "G393"
+  ],
+  "how": "Tilldelningar i TED innehåller avtalslängd/option → beräkna förväntat utgångsdatum per köpare och CPV. Kolada ger kommunens kostnadsvolymer per verksamhet. Diarier (där sökbara) skannas efter 'förfrågningsunderlag' + CPV-nyckelord.",
+  "difficulty": "hög",
+  "value": "hög",
+  "audience": "företag",
+  "category": "Företag & affärer"
+ },
+ {
+  "id": "I13",
+  "title": "Prognosstyrd värmepump: elpris × SMHI × husets termiska tröghet",
+  "pitch": "En HA-integration som lär sig husets tidskonstant från egna sensorer och förvärmer före pristoppar baserat på SMHI/MET-prognos och spotpris SE3/SE4.",
+  "problem": "Kommersiella styrningar (Ngenic Tune, Tibber-smartstyrning, Greenely, 1Komma5 Heartbeat) kostar abonnemang eller kräver deras elavtal.",
+  "sources": [
+   "D231",
+   "H085",
+   "D232",
+   "D233",
+   "C102",
+   "H062",
+   "H005",
+   "C110"
+  ],
+  "how": "Spotpris per timme/kvart för elområdet (elprisetjustnu/ENTSO-E), timprognos för temperatur, vind och solinstrålning (SMHI snow1g + MET + STRÅNG). En liten grey-box-modell (RC-modell) tränas på HA-historik (inne/ute/effekt) och en MPC-optimerare väljer förskjutning av kurvan/SG Ready-läge. Effekttariffer läggs in som straffterm.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "egen hemautomation",
+  "category": "Energi & hem",
+  "exists_free": "PumpSteer (HA custom) – justerar virtuell utetemperatur efter pris; saknar inlärd termisk modell, solinstrålning och effekttariff-optimering."
+ },
+ {
+  "id": "I14",
+  "title": "Elnätets 'grönhet' just nu i SE3/SE4",
+  "pitch": "Visa marginell CO₂-intensitet och import/export per timme så att diskmaskin/elbil körs när elen är både billig och ren.",
+  "problem": "Electricity Maps har gratis-nivå men API-kommersiellt; svenska elbolag visar bara pris.",
+  "sources": [
+   "D233",
+   "D229",
+   "D228",
+   "D234",
+   "D256",
+   "D232"
+  ],
+  "how": "ENTSO-E produktion per typ och gränsflöden för SE3/SE4 + angränsande områden, emissionsfaktorer per bränsle → flödesspårad CO₂-intensitet. UMM (avbrott i kärnkraft) förklarar pristoppar. Exponeras som HA-sensor och REST.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "egen hemautomation",
+  "category": "Energi & hem",
+  "exists_free": "Electricity Maps (gratis i app, betal-API) – skillnaden är öppen källkod, lokal körning och koppling till UMM-avbrott."
+ },
+ {
+  "id": "I15",
+  "title": "UMM-larm: kärnkraftsstopp → pris-varning",
+  "pitch": "Notis när Ringhals/Forsmark/Oskarshamn eller utlandsförbindelser går ner oplanerat, med uppskattad prispåverkan för imorgon.",
+  "problem": "Energitraders har Montel/Refinitiv (dyrt); privatpersoner med timpris får veta först när priset redan sticker.",
+  "sources": [
+   "D256",
+   "D232",
+   "D233",
+   "D229",
+   "H085"
+  ],
+  "how": "Nord Pool UMM ger enhet, otillgänglig MW, start/slut. Historisk regression på tidigare UMM mot SE3/SE4-pris → förväntad påverkan. Push via HA eller Telegram.",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "privatperson",
+  "category": "Energi & hem"
+ },
+ {
+  "id": "I16",
+  "title": "Solcellskalkyl med verklig skuggning och historisk spotpris",
+  "pitch": "Räkna lönsamhet för solceller på ditt tak med Lantmäteriets höjddata (skuggning från träd/hus), STRÅNG-instrålning och timvisa historiska spotpriser för ditt elområde.",
+  "problem": "Solcellsföretag ger egna (optimistiska) kalkyler; oberoende tjänster som Solkollen/Solelkollen är förenklade eller kommersiella.",
+  "sources": [
+   "C118",
+   "H064",
+   "C110",
+   "D233",
+   "H085",
+   "D225",
+   "C124"
+  ],
+  "how": "Byggnadsfotavtryck (C124) + DSM från laserdata ger takets lutning/azimut och horisont. STRÅNG ger historisk timinstrålning för punkten. Simulera produktion timme för timme × spotpris (egenanvändning vs försäljning). Jämför med grannkommunens installerade effekt (D258).",
+  "difficulty": "hög",
+  "value": "hög",
+  "audience": "privatperson",
+  "category": "Energi & hem"
+ },
+ {
+  "id": "I17",
+  "title": "Laddplatskartan med pris × kö × väder",
+  "pitch": "Välj laddstopp utifrån beläggning, effekt, vintertemperatur (räckviddsförlust) och vägväglag på sträckan.",
+  "problem": "Appar som Chargefinder/PlugShare har premiumfunktioner; ABRP Premium kostar abonnemang.",
+  "sources": [
+   "D235",
+   "D236",
+   "D237",
+   "D178",
+   "C102",
+   "D194"
+  ],
+  "how": "NOBIL/OCM-laddare snappas till NVDB-väglänkar längs rutten. Vägväder (temperatur) och väglag per sträcka justerar förbrukningsmodellen. Prognos för ankomsttid används för att varna om halka eller kyla.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "privatperson",
+  "category": "Resor & pendling",
+  "exists_free": "ABRP (gratis bas) – skillnaden är svenskt vägväder/väglag i realtid från Trafikverket."
+ },
+ {
+  "id": "I18",
+  "title": "Fjärrvärme vs värmepump – kommunjämförelse",
+  "pitch": "Visar per kommun vad fjärrvärmen kostar (Nils Holgersson-data) mot vad en värmepump skulle kosta med lokalt spotpris och klimat.",
+  "problem": "Villaägare och BRF:er saknar oberoende jämförelse; konsulter tar betalt.",
+  "sources": [
+   "D240",
+   "C164",
+   "D231",
+   "C177",
+   "D225"
+  ],
+  "how": "Fjärrvärmepris per nätägare/kommun, energideklarationer ger typisk förbrukning per byggår, graddagar från klimatnormaler och historiska spotpriser ger värmepumpskostnad (antagen SCOP efter klimat).",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "kommun/förening",
+  "category": "Energi & hem"
+ },
+ {
+  "id": "I19",
+  "title": "Tågförseningsprognos med väder och historik",
+  "pitch": "Sannolikhet att ditt tåg blir >5 min sent idag, baserat på historisk punktlighet för just den avgången, väderprognos (snö, storm, värme) och pågående banarbeten.",
+  "problem": "Pendlare får bara realtid (SJ, Trafikverket); prognoser finns inte öppet. Kommersiella analysbolag säljer till operatörer.",
+  "sources": [
+   "D178",
+   "C101",
+   "C102",
+   "C111",
+   "D195"
+  ],
+  "how": "Logga TrainAnnouncement (planerad vs faktisk tid) per tågnummer/station löpande. Joina med SMHI-observationer vid närmaste station (tid + koordinat) och varningar. Gradient boosting på (linje, avgång, veckodag, temp, snödjup, vind, banarbete) → P(försening).",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "privatperson",
+  "category": "Resor & pendling"
+ },
+ {
+  "id": "I20",
+  "title": "Västkustbanan-pendlarens morgonkoll (Halland–Göteborg)",
+  "pitch": "En HA-/ESP32-display som 07:00 visar: tåg från din station, buss-ersättning, E6-köer, väglag och om bil eller tåg är snabbast idag.",
+  "problem": "Ingen gratis tjänst kombinerar Västtrafik/Hallandstrafiken, Trafikverkets restider och väglag i ett beslut.",
+  "sources": [
+   "D178",
+   "D208",
+   "C102"
+  ],
+  "how": "Tågavgångar och störningsmeddelanden (TrainMessage), Västtrafik-reseplanerare för buss, TravelTimeRoute för E6-restid, väglag på sträckan. Enkel regel: rekommendera färdmedel med kortast förväntad restid inkl. sannolik försening.",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "egen hemautomation",
+  "category": "Resor & pendling"
+ },
+ {
+  "id": "I21",
+  "title": "Isokronkarta: var kan jag bo med max 45 min till jobbet – och vad kostar det?",
+  "pitch": "Rita restidsytor med kollektivtrafik/cykel och lägg på bostadspris-, skol- och servicelager.",
+  "problem": "Hemnet har restidsfilter i premium/begränsat; TravelTime-API och Iso4App är betalda.",
+  "sources": [
+   "D199",
+   "D200",
+   "D202",
+   "H019",
+   "A004",
+   "G422",
+   "B065"
+  ],
+  "how": "GTFS Sverige + OSM i en lokal OpenTripPlanner/R5 → isokroner. Snitta med DeSO, Mäklarstatistik kr/m² per kommun/stadsdel, skolresultat.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "privatperson",
+  "category": "Resor & pendling"
+ },
+ {
+  "id": "I22",
+  "title": "Kollektivtrafikens 'spökturer'-granskare",
+  "pitch": "Hitta turer som ofta ställs in eller där realtid avviker kraftigt från tidtabell – per linje, operatör och upphandlat avtal.",
+  "problem": "Regionala trafikhuvudmän publicerar sällan inställda turer per avtal; journalister begär ut i efterhand.",
+  "sources": [
+   "D201",
+   "D199",
+   "D206",
+   "H024",
+   "A034"
+  ],
+  "how": "GTFS-RT TripUpdates loggas mot statisk GTFS → andel CANCELED och förseningar per route_id. Koppla operatör (agency) till upphandlingsavtal i TED för att se vilket bolag som levererar sämst mot avtalat.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "journalist",
+  "category": "Demokrati & granskning"
+ },
+ {
+  "id": "I23",
+  "title": "Badtemperaturprognos för varje badplats",
+  "pitch": "Förutsäg vattentemperatur och algrisk 3 dagar framåt för HaV:s badplatser genom att kombinera provtagningar med SMHI-luft, sol, vind och havsmodeller.",
+  "problem": "Badplatsen visar ofta veckogamla prover; appar som Badtemperatur.se/Yr bygger på få givare.",
+  "sources": [
+   "G439",
+   "H059",
+   "C106",
+   "C101",
+   "C102",
+   "C110",
+   "H094"
+  ],
+  "how": "Badplats-ID med koordinat → närmaste SMHI-havsprognos (ocfcst) för kust, luft-/strålningsprognos för insjöar. Modell tränad på historiska prov (temp, E. coli) + föregående dagars väder (ackumulerad sol, nederbörd → bakterier efter skyfall). Även varning 'avråds bad efter >20 mm regn'.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "privatperson",
+  "category": "Natur & friluftsliv"
+ },
+ {
+  "id": "I24",
+  "title": "Brandrisk × avverkning × eldningsförbud för markägare och friluftsfolk",
+  "pitch": "Karta som visar var det just nu är hög brandrisk, eldningsförbud, nyligen avverkad skog (hyggesrester) och blixtnedslag senaste dygnet.",
+  "problem": "Information är spridd över MSB, länsstyrelser och SMHI; räddningstjänster har interna system.",
+  "sources": [
+   "C112",
+   "H061",
+   "H055",
+   "C109",
+   "C151",
+   "H057",
+   "H031",
+   "C175"
+  ],
+  "how": "FWI-raster från SMHI, eldningsförbud som polygoner från MSB-ArcGIS per kommun, Skogsstyrelsens avverkningsytor senaste 2 år (torrt ris), blixtar (C109) senaste 24 h som antändningspunkter, NASA FIRMS för pågående bränder. Lägg på leder/vindskydd.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "kommun/förening",
+  "category": "Säkerhet & beredskap"
+ },
+ {
+  "id": "I25",
+  "title": "Fiskeläget: var biter det?",
+  "pitch": "Kombinera provfiskedata, vattentemperatur, vattenstånd, lufttryck och fiskekortsvatten till en 'fiskeindex'-karta.",
+  "problem": "Fiskeappar som Fishbrain Pro tar betalt för prognoser och hotspots.",
+  "sources": [
+   "C158",
+   "G440",
+   "C104",
+   "C116",
+   "C101",
+   "C102",
+   "G443",
+   "C156"
+  ],
+  "how": "iFiske-vatten (polygon) ↔ närmaste SMHI hydro-station och metobs. Provfiskedata (NORS) ger artförekomst per sjö. Index från trycktrend, vattentemp och vattenföring. Fiskeregler per område från Länsstyrelsen.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "privatperson",
+  "category": "Natur & friluftsliv"
+ },
+ {
+  "id": "I26",
+  "title": "Rödlistade arter i avverkningsanmälningar",
+  "pitch": "Larm till föreningar när en avverkningsanmälan överlappar med fynd av rödlistade arter, nyckelbiotoper eller naturvärden.",
+  "problem": "Naturskyddsföreningar gör detta manuellt; konsulter (naturvärdesinventering) kostar.",
+  "sources": [
+   "C151",
+   "H057",
+   "C145",
+   "C147",
+   "C152",
+   "C138",
+   "H058"
+  ],
+  "how": "Varje ny avverkningsanmälan (geometri) buffras och korsas med Artdatabankens SOS-fynd (rödlistestatus via C147), nyckelbiotoper och skyddad natur. Score + PDF-underlag med fynd och datum skickas inom 6-veckorsfristen.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "kommun/förening",
+  "category": "Natur & friluftsliv"
+ },
+ {
+  "id": "I27",
+  "title": "Pollen + luftkvalitet + väder = allergidag-prognos",
+  "pitch": "Personlig prognos för allergiker som kombinerar pollen, PM/ozon, vind och regn med användarens symtomlogg.",
+  "problem": "Pollenkollen-appen är gratis men saknar personanpassning; vissa apotek-appar är kommersiella.",
+  "sources": [
+   "B096",
+   "C170",
+   "C114",
+   "H011",
+   "C102",
+   "H094"
+  ],
+  "how": "Pollenprognos per station (NRM), CAMS-luftkvalitet och SMHI-luft ger exponering per dag. Användarens symtomlogg (1–5) tränar en enkel logistisk modell om vilka arter/halter som triggar just dem.",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "privatperson",
+  "category": "Hälsa & vardag"
+ },
+ {
+  "id": "I28",
+  "title": "Skidspår- och isläge-rapport",
+  "pitch": "Avgör om sjöisar/spår håller med SMHI-temperaturhistorik (köldgradsdagar), snödjup och vattenstånd.",
+  "problem": "Ingen central källa; Facebook-grupper och Skridskonätet (medlemsbaserat).",
+  "sources": [
+   "C101",
+   "C103",
+   "G441",
+   "C104",
+   "C102"
+  ],
+  "how": "Ackumulerade köldgradsdagar från MESAN per sjökoordinat ger teoretisk istjocklek (Stefans lag). Snödjup och vattenföring (inlopp = svag is) från hydroobs. Kombineras med användarrapporter.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "privatperson",
+  "category": "Natur & friluftsliv"
+ },
+ {
+  "id": "I29",
+  "title": "Läkemedelsbrist-bevakning för mina mediciner",
+  "pitch": "Ange dina läkemedel – få varning om restnotering, föreslaget utbytbart alternativ (periodens vara) och pris.",
+  "problem": "Patienter upptäcker brist på apoteket; FASS har viss info men ingen personlig bevakning.",
+  "sources": [
+   "B084",
+   "B083",
+   "B086",
+   "B087",
+   "G426"
+  ],
+  "how": "NPL-id är nyckel: restnoteringar (B084) joinas med TLV:s utbytesgrupper och periodens varor → alternativ i samma förpackningsstorlek. Notis via e-post/HA.",
+  "difficulty": "låg",
+  "value": "hög",
+  "audience": "privatperson",
+  "category": "Hälsa & vardag"
+ },
+ {
+  "id": "I30",
+  "title": "Vårdvalet: närmaste vårdcentral med kortast kö och bäst resultat",
+  "pitch": "Rangordna vårdcentraler efter väntetid, patientenkät, kvalitetsmått och restid med kollektivtrafik.",
+  "problem": "Vårdguiden listar men jämför dåligt; privata jämförelsesajter är reklamfinansierade.",
+  "sources": [
+   "B090",
+   "B088",
+   "H091",
+   "B093",
+   "B094",
+   "D202"
+  ],
+  "how": "HSA-id/vårdenhetsnamn som nyckel mellan Väntetider, Vården i siffror och 1177-katalogen. IVO-beslut mot vårdgivare matchas på organisationsnummer. Restid via ResRobot från användarens adress.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "privatperson",
+  "category": "Hälsa & vardag"
+ },
+ {
+  "id": "I31",
+  "title": "Matkontroll + återkallelser för restauranger och butiker",
+  "pitch": "Se senaste livsmedelskontroll och återkallade produkter kopplade till butikskedjor nära dig.",
+  "problem": "Danmark har 'Smiley-ordningen'; i Sverige finns ingen samlad gratis källa – kontrollrapporter måste begäras ut.",
+  "sources": [
+   "G411",
+   "G416",
+   "E309",
+   "G414",
+   "G462",
+   "A024"
+  ],
+  "how": "Återkallelser (Livsmedelsverket, Konsumentverket) matchas mot EAN i Open Food Facts och tillverkarens organisationsnummer. Kontrollresultat där kommuner publicerar joinas på anläggningens adress/orgnr.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "privatperson",
+  "category": "Hälsa & vardag"
+ },
+ {
+  "id": "I32",
+  "title": "Radon-kampanjplanerare för kommuner",
+  "pitch": "Prioritera vilka bostadsområden kommunen ska erbjuda radonmätning i, utifrån markradon, byggår, grundläggningstyp och barnfamiljer.",
+  "problem": "Kommuners miljöförvaltningar saknar verktyg; konsultuppdrag kostar.",
+  "sources": [
+   "C136",
+   "C163",
+   "B097",
+   "C164",
+   "C131",
+   "A004",
+   "A002"
+  ],
+  "how": "Markradon och jordart (genomsläpplig grus = hög) per polygon, energideklarationer ger byggår och om radonmätning gjorts, DeSO-befolkning (andel barn). Score per DeSO → utskickslista.",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "kommun/förening",
+  "category": "Hälsa & vardag"
+ },
+ {
+  "id": "I33",
+  "title": "Lobbyism-spåret: upphandlingar × bolag × politiker",
+  "pitch": "Hitta mönster där bolag som vinner kommunala upphandlingar har styrelseledamöter som också är förtroendevalda, PEP eller partidonatorer.",
+  "problem": "Granskande journalister använder Retriever, Infotorg och Bolagsfakta Pro (dyrt) och gör kopplingar manuellt.",
+  "sources": [
+   "H024",
+   "A023",
+   "A024",
+   "H023",
+   "E264",
+   "H021",
+   "E278"
+  ],
+  "how": "Vinnarens orgnr → Bolagsverkets företrädare (där tillgängligt via värdefulla datamängder) → namnmatchning mot OpenSanctions PEP, riksdagsledamöter (E264) och Wikidata. Upphandlande kommun × politisk majoritet (Valmyndigheten). Visa som graf; alla träffar kräver manuell verifiering.",
+  "difficulty": "hög",
+  "value": "hög",
+  "audience": "journalist",
+  "category": "Demokrati & granskning"
+ },
+ {
+  "id": "I34",
+  "title": "Kommunens ekonomi vs utfall: 'vad får vi för skattepengarna?'",
+  "pitch": "Kostnad per elev/brukare/invånare mot resultatmått, jämfört med liknande kommuner – med upphandlingsvolym och statsbidrag.",
+  "problem": "Kolada är gratis men tungt; SKR:s analyser ligger i rapporter. Politiker i småkommuner köper konsulter.",
+  "sources": [
+   "A011",
+   "H080",
+   "A000",
+   "B065",
+   "A034",
+   "A020"
+  ],
+  "how": "Kommunkod är nyckeln. Kolada KPI:er (kostnad + kvalitet), 'liknande kommuner'-grupperna, SCB skattesats, upphandlingsvärde per kommun. Effektivitetsfrontier (DEA) per verksamhet.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "kommun/förening",
+  "category": "Demokrati & granskning"
+ },
+ {
+  "id": "I35",
+  "title": "Lagändrings-diff för företag",
+  "pitch": "Bevakning av SFS-ändringar och propositioner som berör ditt SNI, med AI-sammanfattning och ikraftträdandedatum.",
+  "problem": "Jurister betalar för Karnov, JUNO (Norstedts) eller Zeteo; småföretag missar ändringar.",
+  "sources": [
+   "E269",
+   "E270",
+   "E271",
+   "E261",
+   "E276",
+   "E262",
+   "H026"
+  ],
+  "how": "SFS-nummer → versionsjämförelse (diff) av lagtext. Propositioner/betänkanden via dokumentstatus. Klassificering mot SNI/ämnesord med LLM. EUR-Lex för direktiv som implementeras.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "företag",
+  "category": "Demokrati & granskning"
+ },
+ {
+  "id": "I36",
+  "title": "Myndighetsbeslut-sök (IMY, JO, JK, KKV) med ett gränssnitt",
+  "pitch": "Fulltextsök + semantisk sök över tillsynsbeslut, kopplat till berörd organisation.",
+  "problem": "Juridiska databaser (JUNO, Karnov) tar betalt och täcker inte alla beslut.",
+  "sources": [
+   "E303",
+   "E304",
+   "E305",
+   "E306",
+   "E272",
+   "A023"
+  ],
+  "how": "Skrapa/indexera besluten, extrahera organisationsnummer och belopp, joina med Bolagsverket. Embeddings för semantisk sök på egen GPU.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "företag",
+  "category": "Demokrati & granskning"
+ },
+ {
+  "id": "I37",
+  "title": "Hemberedskapsläget i Home Assistant",
+  "pitch": "En sensor 'beredskapsnivå' för hemmet: VMA, SMHI-varningar, kris­info, strömavbrott, vattenstörning och CERT-SE – med automatiska åtgärder.",
+  "problem": "Krisinformation-appen pushar men integreras inte i hemmet; inga betaltjänster heller.",
+  "sources": [
+   "E286",
+   "E287",
+   "F342",
+   "C111",
+   "G408",
+   "E290",
+   "H072",
+   "C109"
+  ],
+  "how": "Filtrera händelser på användarens kommun/länskod och polygon. Prioritetsmodell: VMA > röd varning > vattenstörning. HA-automation: ladda powerbanks, fyll vattendunk-påminnelse, stäng ventilation vid VMA brand/gas.",
+  "difficulty": "låg",
+  "value": "hög",
+  "audience": "egen hemautomation",
+  "category": "Säkerhet & beredskap"
+ },
+ {
+  "id": "I38",
+  "title": "Skyfallskartan i realtid",
+  "pitch": "Kombinera radar-nederbörd med markhöjd och jordart för att visa vilka gator/källare som riskerar översvämning den närmaste timmen.",
+  "problem": "Kommuner köper skyfallskarteringar av konsulter (DHI, Sweco) som statiska PDF:er.",
+  "sources": [
+   "C108",
+   "C118",
+   "C131",
+   "C111",
+   "H019"
+  ],
+  "how": "Radarbilder (5 min) ger nederbördsintensitet; GSD-höjddata ger flödesackumulering och lågpunkter (förbearbetat en gång); jordart ger infiltrationsförmåga. Snabb 'bucket'-modell per avrinningscell.",
+  "difficulty": "hög",
+  "value": "hög",
+  "audience": "kommun/förening",
+  "category": "Säkerhet & beredskap"
+ },
+ {
+  "id": "I39",
+  "title": "Polishändelser normerade per invånare och tid",
+  "pitch": "Brottsplatskartan visar punkter; detta visar trend och avvikelse per DeSO mot normalnivå, så att en enstaka rubrik inte blir 'otryggt område'.",
+  "problem": "Mediabilden skapar oro; Brå:s statistik kommer årsvis.",
+  "sources": [
+   "E281",
+   "H071",
+   "E283",
+   "E284",
+   "A004",
+   "A002"
+  ],
+  "how": "Polisens händelser geokodas grovt (kommun/ort), aggregeras per vecka och normaliseras mot befolkning. Brå:s årsstatistik som baslinje. Visa z-score istället för råa punkter.",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "journalist",
+  "category": "Säkerhet & beredskap",
+  "exists_free": "Brottsplatskartan.se – visar händelser men inte normerade trender mot befolkning och historik."
+ },
+ {
+  "id": "I40",
+  "title": "Räddningstjänstens responstid vs ny bebyggelse",
+  "pitch": "Visa var nybyggda bostäder hamnar utanför 10/20-minutersgräns från brandstation.",
+  "problem": "Kommuner och räddningstjänstförbund gör detta i dyra GIS-konsultuppdrag.",
+  "sources": [
+   "E288",
+   "E289",
+   "C124",
+   "D194",
+   "H019",
+   "G409"
+  ],
+  "how": "Brandstationer från OSM, vägnät från NVDB med hastighetsgränser → isokroner. Nya byggnader (C124 diff över år, bygglov) korsas. IDA ger faktisk genomsnittlig tid per kommun för kalibrering.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "kommun/förening",
+  "category": "Säkerhet & beredskap"
+ },
+ {
+  "id": "I41",
+  "title": "Drönarflyg-OK? (luftrum × väder × naturreservat)",
+  "pitch": "En knapp: får och bör jag flyga drönare här nu? Luftrumszoner, NOTAM, vind, nederbörd och naturreservatsföreskrifter.",
+  "problem": "Drönarappar som UAV Forecast/AirMap har premium; svenska regler i Drönarkartan saknar väder.",
+  "sources": [
+   "D216",
+   "D224",
+   "H070",
+   "C102",
+   "C138",
+   "H058"
+  ],
+  "how": "Punkt-i-polygon mot LFV-luftrumszoner och skyddad natur (föreskrifter om flygförbud), vind i byar från SMHI-prognos, NOTAM för tillfälliga restriktioner.",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "privatperson",
+  "category": "Säkerhet & beredskap"
+ },
+ {
+  "id": "I42",
+  "title": "Skolvalsmotorn (Skolverket × DeSO × restid)",
+  "pitch": "Hitta gymnasie-/grundskolor som är både bra och nåbara: meritvärde, behöriga lärare, inspektionsresultat och restid med kollektivtrafik.",
+  "problem": "Föräldrar använder Skolverkets 'Hitta skola' (dålig restidskoppling) eller betalda jämförelser i media.",
+  "sources": [
+   "B062",
+   "B065",
+   "B067",
+   "A012",
+   "B063",
+   "D202",
+   "D199",
+   "A004"
+  ],
+  "how": "Skolenhetskod är nyckel mellan Skolenhetsregistret, SIRIS-statistik, Skolinspektionen och Kolada enhetsdata. Restid från hemadress via ResRobot vid skolstart 08:00. Visa 'förädlingsvärde' (SALSA-liknande: resultat vs förväntat utifrån elevunderlag/DeSO).",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "privatperson",
+  "category": "Jobb & utbildning"
+ },
+ {
+  "id": "I43",
+  "title": "Kompetensgap-kompassen",
+  "pitch": "Vilka utbildningar leder till jobb i min region? Matcha utbildningars kursinnehåll mot efterfrågade kompetenser i annonser.",
+  "problem": "Studievägledare och jobbsökare saknar data; betaltjänster som Lightcast säljer kompetensdata till företag.",
+  "sources": [
+   "B050",
+   "B052",
+   "B054",
+   "B055",
+   "B057",
+   "B063",
+   "B061",
+   "B068"
+  ],
+  "how": "JobAd Enrichments extraherar kompetenser ur annonser; JobTech Education ger utbildningsbeskrivningar. Ontologi (B055) mappar båda. Rankning per län: utbildning → andel efterfrågade kompetenser × yrkesprognos.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "privatperson",
+  "category": "Jobb & utbildning"
+ },
+ {
+  "id": "I44",
+  "title": "Lönerealism per yrke och kommun",
+  "pitch": "Uppskatta rimlig lön och levnadskostnad efter skatt och boende för ett jobberbjudande i en annan kommun.",
+  "problem": "Lönestatistik i Saco Lönesök/Unionens kräver medlemskap; Lönestatistik-sajter med betalvägg.",
+  "sources": [
+   "A000",
+   "A036",
+   "B053",
+   "G422",
+   "D202",
+   "A006"
+  ],
+  "how": "SCB lönestrukturstatistik per SSYK-yrke (B053 mappar annonsyrke→SSYK), Skatteverkets skattetabell per kommun, boendekostnad från Mäklarstatistik, pendlingskostnad. Resultat: disponibel inkomst-jämförelse.",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "privatperson",
+  "category": "Jobb & utbildning"
+ },
+ {
+  "id": "I45",
+  "title": "Travets väderfaktor-feature (för ATG-modellen)",
+  "pitch": "Lägg till banväder per lopp – temperatur, nederbörd senaste 24 h, vind – och banans underlag som features i LightGBM-rankern.",
+  "problem": "Betalda travtjänster (Travronden Spel, Trav365-premium, Stallsnack-premium) ger tips men inte rå väderfeatures; ATG-data saknar meteorologi.",
+  "sources": [
+   "G429",
+   "G431",
+   "C101",
+   "C103",
+   "C177"
+  ],
+  "how": "Bankoordinat → närmaste SMHI-station eller MESAN-gridpunkt; joina på loppets starttid (UTC). Features: nederbörd 24h, temp, vind, 'tung bana'-proxy. Testa i befintlig pipeline mot Top-1/AUC/Brier/ECE innan deploy (marknadsoberoende features!).",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "egen hemautomation",
+  "category": "Sport & spel"
+ },
+ {
+  "id": "I46",
+  "title": "Marknadsoberoende travmodell: härstamning × tränarform",
+  "pitch": "Bygg features som inte är odds/streck – tränarens och kuskens 30-dagarsform, avelslinje på distans, resväg till banan – för att få verklig edge i V85/V86.",
+  "problem": "Spelare köper Travronden, Trav365 eller 'systemtjänster'; ingen öppen marknadsoberoende modell finns.",
+  "sources": [
+   "G429",
+   "G431",
+   "D202",
+   "H018",
+   "F357"
+  ],
+  "how": "ATG/Svensk Travsport: häst-id, tränare-id, kusk-id → rullande statistik. Stallets adress (geokodad) → avstånd till banan (transportstress). Avel: far/morfar-distansprofil. Ersätter odds-features enligt CLAUDE.md-målet om marknadsoberoende modell.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "egen hemautomation",
+  "category": "Sport & spel"
+ },
+ {
+  "id": "I47",
+  "title": "CCounter × Trafikverkets mätpunkter: kalibrera och validera trafikräknaren",
+  "pitch": "Jämför din kameras räkningar med närmaste Trafikverket-mätplats och ÅDT för att upptäcka drift, och väderkorrigera.",
+  "problem": "Kommersiella trafikanalyser (Viscando, Vivacity) kostar; DIY-räknare saknar referens.",
+  "sources": [
+   "D178",
+   "D196",
+   "H067",
+   "C101",
+   "C108"
+  ],
+  "how": "Närmaste MeasurementData-punkt på samma väg (NVDB-länk) ger referensflöde per timme; förhållandet CCounter/TV ska vara stabilt – avvikelser signalerar kamerafel/fokus. Vägväder (regn, mörker) som kovariat förklarar detektionsbortfall; radar avgör nederbörd exakt. Bonus: publicera räkningarna som öppen JSON med NVDB-länk-ID som nyckel och registrera i Sveriges dataportal – fyller Trafikverkets glesa mätnät på lokalvägar.",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "egen hemautomation",
+  "category": "Hemautomation"
+ },
+ {
+  "id": "I48",
+  "title": "ESP32-väderstation som fyller SMHI:s luckor",
+  "pitch": "Lokal sensor som jämförs med MESAN/närmaste station och bias-korrigerar prognosen för just din tomt (frostvarning, värmepumpens defrost).",
+  "problem": "Netatmo m.fl. kräver deras moln; ingen gör automatisk lokal prognoskorrigering.",
+  "sources": [
+   "C103",
+   "C102",
+   "H062",
+   "C101",
+   "H094"
+  ],
+  "how": "ESP32-mätningar (temp, RH) loggas i HA; skillnad mot MESAN-gridpunkt och snow1g-prognos per timme tränar en bias-modell (tid på dygnet, molnighet, vind). Korrigerad prognos matas till värmepumpsstyrningen.",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "egen hemautomation",
+  "category": "Hemautomation"
+ },
+ {
+  "id": "I49",
+  "title": "Grundvatten-/brunnsvakt för villa med egen brunn",
+  "pitch": "Varnar när grundvattnet i ditt område är lågt och ger historisk jämförelse – innan brunnen sinar.",
+  "problem": "Brunnsägare får veta när det är för sent; SGU:s data är svår att tolka.",
+  "sources": [
+   "C133",
+   "C134",
+   "H063",
+   "C101"
+  ],
+  "how": "Brunnsarkivet ger din brunns djup/jordart; närmaste grundvattenrör med samma magasintyp och SGU:s percentil för månaden. Nederbördsprognos och HYPE-prognos → 'risk för låga nivåer'-sensor i HA.",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "egen hemautomation",
+  "category": "Hemautomation"
+ },
+ {
+  "id": "I50",
+  "title": "svensk-data-mcp: ett MCP-paket för de 20 bästa svenska API:erna",
+  "pitch": "En MCP-server med enhetliga verktyg (geokoda, kommunkod, väder, el, tåg, bolag, upphandling, statistik) som låter LLM:er svara på svenska samhällsfrågor med källhänvisning.",
+  "problem": "Utvecklare bygger egna wrappers om och om igen; befintliga MCP:er täcker en myndighet var.",
+  "sources": [
+   "A000",
+   "A011",
+   "C101",
+   "C102",
+   "D178",
+   "D231",
+   "A023",
+   "H024",
+   "E261",
+   "B050",
+   "C125",
+   "H018",
+   "E286",
+   "A004"
+  ],
+  "how": "Gemensamt koordinat-/kommunkodslager (se nyckeltjänsten) gör att verktygen kan kedjas: 'hitta kommunkod → hämta Kolada KPI → jämför med SCB'. Cache i SQLite, rate-limit per källa, svar med URL till originaldatat.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "forskare",
+  "category": "Data-infrastruktur",
+  "exists_free": "scb-mcp, Trafikverket-MCP, apiverket-mcp – enskilda källor; saknas en samlad server med gemensamma geografiska nycklar och korsfrågor."
+ },
+ {
+  "id": "I51",
+  "title": "Geonyckeln: kommunkod ↔ DeSO ↔ RegSO ↔ postnummer ↔ valdistrikt ↔ koordinat",
+  "pitch": "En liten, självhostbar tjänst som översätter mellan alla svenska geografiska indelningar.",
+  "problem": "Postnummerdatabaser (PostNord-licens, Postnummerservice) kostar; varje analys gör samma spatial-join igen.",
+  "sources": [
+   "A004",
+   "H066",
+   "E279",
+   "G419",
+   "C125",
+   "C176",
+   "H018",
+   "H020"
+  ],
+  "how": "Ladda polygoner (DeSO/RegSO, valdistrikt, kommun/län) och adresspunkter; postnummer härleds från adresspunkter (konvex hull/voronoi) där öppen lista saknas. Endpoints: /point?lat=..&lon=.. och /crosswalk?from=deso&to=valdistrikt med areaviktning.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "forskare",
+  "category": "Data-infrastruktur"
+ },
+ {
+  "id": "I52",
+  "title": "Organisationsnummer-hubben",
+  "pitch": "Samlad identitetsgraf för svenska organisationer: orgnr ↔ LEI ↔ upphandlings-ID ↔ HSA-id ↔ skolenhet ↔ myndighetsregister ↔ Wikidata.",
+  "problem": "Bisnode/D&B och Retriever säljer detta som berikade register.",
+  "sources": [
+   "A024",
+   "A023",
+   "H022",
+   "H024",
+   "E311",
+   "B062",
+   "H021",
+   "B093"
+  ],
+  "how": "Bulkfil som stam; LEI-registeredAs = orgnr; TED-köpare/vinnare har nationellt id; skolhuvudmän och vårdgivare har orgnr. Wikidata P-egenskap för orgnr. Publiceras som SQLite + REST.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "journalist",
+  "category": "Data-infrastruktur"
+ },
+ {
+  "id": "I53",
+  "title": "PxWeb-till-Parquet-speglare",
+  "pitch": "Nattlig spegling av utvalda SCB/Kolada/Folkhälso/Jordbruksverk-PxWeb-tabeller till Parquet med enhetliga kolumner (region_kod, tid, värde).",
+  "problem": "Analytiker skriver om samma frågor; PxWeb har tak på celler per anrop.",
+  "sources": [
+   "A000",
+   "A001",
+   "H076",
+   "C160",
+   "A018",
+   "D225",
+   "B070",
+   "H045"
+  ],
+  "how": "Gemensam PxWeb-klient chunkar frågor, normaliserar regionkoder till kommunkod/länskod och tid till ISO. DuckDB-frågbart; versionsstämplas så ändrad historik syns.",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "forskare",
+  "category": "Data-infrastruktur"
+ },
+ {
+  "id": "I54",
+  "title": "Svensk tidsserie-feature-store för ML",
+  "pitch": "Färdiga, tidsjusterade features (väder, elpris, helgdagar, löning, skollov) per timme och kommun/elområde – för prognosmodeller.",
+  "problem": "Datateam köper väder (DTN, Meteomatics) och bygger kalendrar själva.",
+  "sources": [
+   "C101",
+   "H006",
+   "D233",
+   "G417",
+   "A036",
+   "C177",
+   "D229"
+  ],
+  "how": "Gemensam tidsaxel UTC/timme, nyckel kommunkod + elområde. Väderobservationer interpoleras till kommuncentroider, helgdagar/klämdagar/skollov per län, 25:e-löning. Exponeras som Parquet + API.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "forskare",
+  "category": "Data-infrastruktur"
+ },
+ {
+  "id": "I55",
+  "title": "Dataportal-hälsokollen",
+  "pitch": "Övervaka om svenska öppna API:er lever, ändrar schema eller bryter licens – och larma beroende projekt.",
+  "problem": "Ingen gör det; projekt upptäcker trasiga endpoints i produktion.",
+  "sources": [
+   "E293",
+   "E295",
+   "H074",
+   "H025"
+  ],
+  "how": "Läs DCAT-katalogen, pinga distribution-URL:er dagligen, spara JSON-schema-fingeravtryck och diffa. Publicera status-sida och RSS. Kan köras på hemservern.",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "forskare",
+  "category": "Data-infrastruktur"
+ },
+ {
+  "id": "I56",
+  "title": "Lokal svensk RAG över riksdagstryck och SOU",
+  "pitch": "Självhostad semantisk sökmotor (RTX 3050 + KBLab-embeddings) över propositioner, SOU och betänkanden med citat.",
+  "problem": "Juridiska AI-tjänster (JUNO AI, Karnov AI) kostar per licens.",
+  "sources": [
+   "E267",
+   "E263",
+   "E276",
+   "F321",
+   "H037",
+   "F347"
+  ],
+  "how": "Bulkfiler från Riksdagen chunkas per avsnitt, embeddas med KBLab sentence-BERT, indexeras i Qdrant. Metadata (dok_id, datum, utskott) från dokumentstatus. Svar alltid med dok_id + sidnummer.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "forskare",
+  "category": "Data-infrastruktur"
+ },
+ {
+  "id": "I57",
+  "title": "Jordbrukets skördeväder: block × väder × markfukt",
+  "pitch": "För lantbrukare: optimal skörde-/såddag per jordbruksblock baserat på nederbörd, markfukt (HYPE), jordart och prognos.",
+  "problem": "Lantbrukare betalar för Dataväxt/Yara Atfarm/CropSAT-premium eller väderstationer från Agrometeo.",
+  "sources": [
+   "C159",
+   "H068",
+   "C131",
+   "C102",
+   "C103",
+   "H009"
+  ],
+  "how": "Blockgeometri från Jordbruksverket → jordart och HYPE-delavrinningsområde (markfukt). MESAN-nederbörd senaste veckan + prognos → körbarhet. Sentinel-2 NDVI (H009) för grödans status.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "företag",
+  "category": "Natur & friluftsliv"
+ },
+ {
+  "id": "I58",
+  "title": "Sjökort-väder för fritidsbåten",
+  "pitch": "Ruttplanering för fritidsbåt i Kattegatt med vind, våg, vattenstånd och AIS-trafiktäthet.",
+  "problem": "Navionics/Orca premium, PredictWind kostar.",
+  "sources": [
+   "H092",
+   "C167",
+   "D221",
+   "D222",
+   "H030",
+   "C111"
+  ],
+  "how": "Farleder (WFS) som graf; vind/våg-prognos från SMHI ocfcst längs segmenten; ViVa realtid validerar; AIS-täthet visar risk för fartygstrafik. Varningar för kuling.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "privatperson",
+  "category": "Resor & pendling"
+ },
+ {
+  "id": "I59",
+  "title": "Vindkraft-, avverkning- och viltkonflikt-översikt per kommun",
+  "pitch": "För kommuner och föreningar: var vindkraft planeras relativt skyddad natur, rödlistade fåglar och friluftsleder.",
+  "problem": "Konsultbolag gör MKB-underlag dyrt per projekt.",
+  "sources": [
+   "D257",
+   "C138",
+   "C145",
+   "C147",
+   "C175",
+   "G438",
+   "H058"
+  ],
+  "how": "Vindbrukskollen-verk och projektområden buffras; korsas med Natura 2000/naturreservat, Artdatabankens fynd av örn/fladdermöss och leder. Score per projekt.",
+  "difficulty": "medel",
+  "value": "medel",
+  "audience": "kommun/förening",
+  "category": "Natur & friluftsliv"
+ },
+ {
+  "id": "I60",
+  "title": "Bredband & mobiltäckning för distansarbete på landet",
+  "pitch": "Hitta fritidshus/bostäder där fiber finns och 5G-täckningen faktiskt mäts bra – för distansarbetare.",
+  "problem": "Operatörers täckningskartor är optimistiska; Bredbandskollen visar bara egna mätningar.",
+  "sources": [
+   "D242",
+   "D244",
+   "H047",
+   "C125",
+   "D202",
+   "H019"
+  ],
+  "how": "PTS adressnivå-täckning + crowdsourcade Bredbandskollen-mätningar per kommun + RIPE Atlas-prober för latens. Kombineras med restid till närmaste tågstation.",
+  "difficulty": "låg",
+  "value": "medel",
+  "audience": "privatperson",
+  "category": "Boende & fastighet"
+ }
+]

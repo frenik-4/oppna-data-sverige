@@ -1,0 +1,13 @@
+{
+  "title": "Öppna data Sverige",
+  "description": "Katalog över öppna svenska databaser och API:er. Källa: github.com/frenik-4/oppna-data-sverige",
+  "databases": {
+    "oppna_data": {
+      "tables": {
+        "kallor": {"description": "En rad per datakälla/API", "facets": ["category", "status", "auth", "provider_type"]},
+        "ideer": {"description": "Verktygsidéer som kombinerar flera källor", "facets": ["category", "value"]},
+        "ide_kallor": {"description": "Koppling idé -> källa"}
+      }
+    }
+  }
+}

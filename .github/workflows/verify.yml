@@ -1,0 +1,26 @@
+name: Veckotest av endpoints
+on:
+  schedule:
+    - cron: "17 3 * * 1"   # måndagar 03:17 UTC
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Testa alla endpoints
+        run: python3 tools/verify.py | tee verify.log
+      - name: Öppna PR om status ändrats
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: auto/veckotest
+          commit-message: "Veckotest: uppdatera teststatus för endpoints"
+          title: "Veckotest: ändrad teststatus för endpoints"
+          body-path: verify.log
+          add-paths: data/catalog.json
+          delete-branch: true

@@ -1,0 +1,7 @@
+build/
+site/catalog.json
+site/ideas.json
+site/meta.json
+__pycache__/
+.venv/
+.env

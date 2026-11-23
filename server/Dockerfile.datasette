@@ -1,0 +1,10 @@
+FROM python:3.12-slim
+RUN pip install --no-cache-dir "datasette==0.65.1" "datasette-cors==0.3" "setuptools<81"
+WORKDIR /app
+COPY data/ data/
+COPY tools/ tools/
+COPY site/index.html site/index.html
+RUN python3 tools/export.py
+EXPOSE 8001
+CMD ["datasette", "serve", "build/oppna_data.db", "-h", "0.0.0.0", "-p", "8001", \
+     "--metadata", "server/datasette-metadata.json", "--setting", "sql_time_limit_ms", "3000"]

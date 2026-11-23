@@ -1,0 +1,230 @@
+<title>Öppna data Sverige</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky filterpanel till vänster, sökbar postlista till höger; flikar för katalog / idéer / metod. */
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --ink:#0f1a2a; --muted:#3c4a5e; --line:#d5dbe4;
+  --accent:#0b4fa8; --accent-ink:#ffffff; --hl:#fde68a; --chip:#e8eef7;
+  --ok:#0b6b3a; --warn:#8a5a00; --bad:#a1281e;
+  --f-display:"Instrument Sans",system-ui,sans-serif; --f-body:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d131c; --surface:#151d29; --ink:#eef2f7; --muted:#b4c0d0; --line:#2c394b;
+  --accent:#7fb2ff; --accent-ink:#06121f; --hl:#5c4a0a; --chip:#1e2a3b;
+  --ok:#6fdba0; --warn:#f3c560; --bad:#ff8f84; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d131c; --surface:#151d29; --ink:#eef2f7; --muted:#b4c0d0; --line:#2c394b;
+  --accent:#7fb2ff; --accent-ink:#06121f; --hl:#5c4a0a; --chip:#1e2a3b;
+  --ok:#6fdba0; --warn:#f3c560; --bad:#ff8f84; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.wrap{max-width:1280px;margin:0 auto}
+header.top{padding-block:28px 12px;display:flex;flex-wrap:wrap;gap:12px 32px;align-items:end;justify-content:space-between}
+h1{font:700 clamp(26px,4vw,38px)/1.1 var(--f-display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.lede{margin:6px 0 0;color:var(--muted);max-width:68ch}
+.stats{display:flex;gap:20px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.stats div{display:flex;flex-direction:column}
+.stats b{font:600 22px var(--f-display)}
+.stats span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+nav.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-top:12px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;overflow-x:auto}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+nav.tabs button{font:600 14px var(--f-display);background:none;border:0;border-bottom:3px solid transparent;padding:12px 14px;color:var(--muted);cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:28px;margin-top:20px}
+@media (max-width:860px){.layout{grid-template-columns:minmax(0,1fr)}}
+aside.filters{display:flex;flex-direction:column;gap:18px;align-self:start;position:sticky;top:calc(env(safe-area-inset-top,0px) + 60px);max-height:calc(100vh - 80px);overflow:auto;padding-right:4px}
+@media (max-width:860px){aside.filters{position:static;max-height:none}}
+.fgroup h3{font:600 12px var(--f-display);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 6px}
+.catlist{display:flex;flex-direction:column;gap:2px}
+.catlist button{display:flex;justify-content:space-between;gap:8px;text-align:left;background:none;border:0;padding:5px 8px;border-radius:6px;color:var(--ink);font:14px var(--f-body);cursor:pointer}
+.catlist button:hover{background:var(--chip)}
+.catlist button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.catlist .n{font-variant-numeric:tabular-nums;opacity:.85}
+.search{width:100%;font:15px var(--f-body);padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font:13px var(--f-body);padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.resbar{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin-bottom:10px;color:var(--muted);font-size:14px}
+.resbar select{font:14px var(--f-body);padding:6px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.list{display:flex;flex-direction:column;gap:10px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.item h4{font:600 16px/1.3 var(--f-display);margin:0}
+.item .prov{color:var(--muted);font-size:13px}
+.ihead{display:flex;gap:10px 16px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.b{font:500 12px var(--f-body);padding:2px 8px;border-radius:4px;background:var(--chip);color:var(--ink);white-space:nowrap}
+.st{font:600 12px var(--f-body);padding:2px 8px;border-radius:4px;border:1.5px solid currentColor;white-space:nowrap}
+.st.ok{color:var(--ok)} .st.warn{color:var(--warn)} .st.bad{color:var(--bad)} .st.none{color:var(--muted)}
+.item p{margin:8px 0 0;max-width:80ch}
+.item .use{color:var(--muted)}
+details{margin-top:8px}
+summary{cursor:pointer;font:600 13px var(--f-display);color:var(--accent)}
+.kv{display:grid;grid-template-columns:120px minmax(0,1fr);gap:4px 12px;margin-top:8px;font-size:14px}
+@media (max-width:520px){.kv{grid-template-columns:minmax(0,1fr)} .kv dt{margin-top:6px}}
+.kv dt{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em;padding-top:2px}
+.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+code,.mono{font:13px/1.45 var(--f-mono)}
+.codebox{display:flex;gap:6px;align-items:flex-start}
+.codebox code{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+.copy{font:12px var(--f-body);padding:5px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;flex:none}
+a{color:var(--accent)}
+mark{background:var(--hl);color:inherit;padding:0 1px;border-radius:2px}
+.more{margin:16px auto 0;display:block;font:600 14px var(--f-display);padding:10px 18px;border-radius:8px;border:1px solid var(--accent);background:var(--surface);color:var(--accent);cursor:pointer}
+.ideas{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,380px),1fr));gap:12px}
+.idea{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.idea h4{font:600 17px/1.25 var(--f-display);margin:0;text-wrap:balance}
+.idea .pitch{margin:0;font-weight:500}
+.idea .meta{display:flex;flex-wrap:wrap;gap:6px}
+.idea .small{font-size:14px;color:var(--muted);margin:0}
+.srcs{display:flex;flex-wrap:wrap;gap:6px}
+.srcs button{font:12px var(--f-body);padding:3px 8px;border-radius:4px;border:1px dashed var(--accent);background:none;color:var(--accent);cursor:pointer;text-align:left}
+.lvl{font-variant-numeric:tabular-nums}
+.prose{max-width:72ch}
+.prose h2{font:600 22px var(--f-display);margin:28px 0 8px}
+.prose li{margin:4px 0}
+.fwrap>summary{display:none}
+.fwrap-in{display:flex;flex-direction:column;gap:18px}
+@media (max-width:860px){.fwrap>summary{display:block;font:600 14px var(--f-display);padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}.fwrap[open]>summary{margin-bottom:14px}}
+.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:10px}
+.note{font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.item,.idea{transition:border-color .15s}.item:hover,.idea:hover{border-color:var(--accent)}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div>
+    <h1>Öppna data Sverige</h1>
+    <p class="lede">Kunskapsbank över öppna och gratis databaser och API:er med svensk data: myndigheter först, sedan kommuner, forskning, föreningar, företag och internationella källor. Varje post beskriver vilken data du får ut, hur du når den och vad den kan kopplas ihop med.</p>
+  </div>
+  <div class="stats" id="stats"></div>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" id="tab-katalog" aria-selected="true" data-view="katalog">Katalog</button>
+  <button role="tab" id="tab-ideer" aria-selected="false" data-view="ideer">Verktygsidéer</button>
+  <button role="tab" id="tab-kopplingar" aria-selected="false" data-view="kopplingar">Kopplingsnycklar</button>
+  <button role="tab" id="tab-metod" aria-selected="false" data-view="metod">Om katalogen</button>
+</nav>
+
+<section id="view-katalog">
+  <div class="layout">
+    <aside class="filters">
+      <input class="search" id="q" type="search" placeholder="Sök: t.ex. elpris, DeSO, GTFS, radon" aria-label="Sök i katalogen">
+      <details class="fwrap" id="fwrap" open><summary>Filter</summary><div class="fwrap-in">
+      <div class="fgroup"><h3>Kategori</h3><div class="catlist" id="cats"></div></div>
+      <div class="fgroup"><h3>Åtkomst</h3><div class="chips" id="f-auth"></div></div>
+      <div class="fgroup"><h3>Teststatus</h3><div class="chips" id="f-status"></div></div>
+      <div class="fgroup"><h3>Utgivare</h3><div class="chips" id="f-ptype"></div></div>
+      <div class="fgroup"><h3>Gränssnitt</h3><div class="chips" id="f-access"></div></div>
+      </div></details>
+    </aside>
+    <div style="min-width:0">
+      <div class="resbar"><span id="count"></span>
+        <label>Sortera <select id="sort"><option value="cat">Kategori, sedan utgivare</option><option value="name">Namn A–Ö</option><option value="status">Teststatus</option></select></label>
+      </div>
+      <div class="list" id="list"></div>
+      <button class="more" id="more" hidden>Visa fler</button>
+    </div>
+  </div>
+</section>
+
+<section id="view-ideer" hidden>
+  <div class="resbar" style="margin-top:20px"><span id="icount"></span>
+    <div class="chips" id="f-icat"></div>
+  </div>
+  <div class="ideas" id="ideas"></div>
+</section>
+
+<section id="view-kopplingar" hidden><div class="prose" id="keys"></div></section>
+<section id="view-metod" hidden><div class="prose" id="method"></div></section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let DATA=[],IDEAS=[],byId={};
+const st={q:'',cat:null,auth:new Set(),status:new Set(),ptype:new Set(),access:new Set(),sort:'cat',limit:60,icat:null};
+const STATUS={verifierad:['ok','✓ Svarar'],nyckel:['ok','✓ Svarar (kräver nyckel)'],blockerad:['warn','◐ Ej nåbar från molnet'],overifierad:['none','○ Ej testad'],stängd:['bad','✕ Ej öppen']};
+const authNorm=a=>{a=(a||'').toLowerCase();if(a.startsWith('ingen'))return 'Ingen nyckel';if(a.includes('gratis'))return 'Gratis nyckel';if(a.includes('registrering')||a.includes('avtal'))return 'Registrering/avtal';if(a.includes('delvis'))return 'Delvis';return 'Okänt'};
+const accNorm=a=>{a=(a||'');for(const k of ['REST','GraphQL','SPARQL','OGC','Filnedladdning','Ström','GTFS','SDMX','PxWeb','OAI-PMH','Webbskrapning'])if(a.includes(k))return k==='Ström'?'Ström/realtid':k;return 'Övrigt'};
+function hl(t){t=esc(t);if(!st.q)return t;const w=st.q.trim().split(/\s+/).filter(x=>x.length>1).map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));if(!w.length)return t;return t.replace(new RegExp('('+w.join('|')+')','gi'),'<mark>$1</mark>')}
+function chipGroup(el,values,set,counts){el.innerHTML=values.map(v=>`<button aria-pressed="${set.has(v)}" data-v="${esc(v)}">${esc(v)} <span class="n">${counts[v]||0}</span></button>`).join('');el.onclick=e=>{const b=e.target.closest('button');if(!b)return;const v=b.dataset.v;set.has(v)?set.delete(v):set.add(v);st.limit=60;render()}}
+function match(r){
+  if(st.cat&&r.category!==st.cat)return false;
+  if(st.auth.size&&!st.auth.has(r._auth))return false;
+  if(st.status.size&&!st.status.has(STATUS[r.status][1]))return false;
+  if(st.ptype.size&&!st.ptype.has(r.provider_type))return false;
+  if(st.access.size&&!st.access.has(r._acc))return false;
+  if(st.q){const hay=r._hay;return st.q.toLowerCase().split(/\s+/).every(w=>hay.includes(w))}
+  return true}
+function card(r){
+  const [cls,lab]=STATUS[r.status];
+  const code=(lbl,v)=>v?`<dt>${lbl}</dt><dd><div class="codebox"><code>${esc(v)}</code><button class="copy" data-copy="${esc(v)}">Kopiera</button></div></dd>`:'';
+  return `<article class="item" id="p-${esc(r.id)}">
+  <div class="ihead"><div style="min-width:0"><h4>${hl(r.name)}</h4><div class="prov">${hl(r.provider)} · ${esc(r.subcategory||r.category)}</div></div>
+  <div class="badges"><span class="st ${cls}">${lab}</span><span class="b">${esc(r._auth)}</span><span class="b">${esc(r._acc)}</span></div></div>
+  <p>${hl(r.data)}</p>${r.use_cases?`<p class="use"><b>Användning:</b> ${hl(r.use_cases)}</p>`:''}
+  <details><summary>Ingångar, tips och detaljer</summary><dl class="kv">
+   <dt>Dokumentation</dt><dd><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url)}</a></dd>
+   ${code('Endpoint',r.endpoint)}${code('Exempel',r.example)}
+   ${r.tips?`<dt>Tips</dt><dd>${hl(r.tips)}</dd>`:''}
+   ${r.note?`<dt>Testnotis</dt><dd>${esc(r.note)}</dd>`:''}
+   <dt>Format</dt><dd>${esc((r.formats||[]).join(', ')||'–')}</dd>
+   <dt>Licens</dt><dd>${esc(r.license||'–')}</dd>
+   <dt>Uppdateras</dt><dd>${esc(r.update_frequency||'–')}</dd>
+   <dt>Utgivartyp</dt><dd>${esc(r.provider_type||'–')}</dd>
+   <dt>Post-id</dt><dd class="mono">${esc(r.id)}</dd>
+  </dl></details></article>`}
+function render(){
+  const f=DATA.filter(match);
+  const ord={verifierad:0,nyckel:1,blockerad:2,overifierad:3,stängd:4};
+  f.sort(st.sort==='name'?(a,b)=>a.name.localeCompare(b.name,'sv'):st.sort==='status'?(a,b)=>ord[a.status]-ord[b.status]||a.name.localeCompare(b.name,'sv'):(a,b)=>a._ci-b._ci||a._pr-b._pr||(a.provider||'').localeCompare(b.provider||'','sv')||a.name.localeCompare(b.name,'sv'));
+  $('#count').textContent=`${f.length} av ${DATA.length} källor`;
+  $('#list').innerHTML=f.length?f.slice(0,st.limit).map(card).join(''):'<div class="empty">Inga källor matchar. Ta bort ett filter eller sök bredare.</div>';
+  $('#more').hidden=f.length<=st.limit;$('#more').textContent=`Visa fler (${f.length-st.limit} kvar)`;
+  const cc={};DATA.forEach(r=>{if(!st.q||match({...r,category:st.cat||r.category}))cc[r.category]=(cc[r.category]||0)+1});
+  $('#cats').innerHTML=`<button aria-pressed="${!st.cat}" data-c="">Alla kategorier <span class="n">${DATA.length}</span></button>`+CATS.map(c=>`<button aria-pressed="${st.cat===c}" data-c="${esc(c)}"><span>${esc(c)}</span><span class="n">${cc[c]||0}</span></button>`).join('');
+  const cnt=k=>{const o={};DATA.forEach(r=>{o[k(r)]=(o[k(r)]||0)+1});return o};
+  chipGroup($('#f-auth'),['Ingen nyckel','Gratis nyckel','Registrering/avtal','Delvis'],st.auth,cnt(r=>r._auth));
+  chipGroup($('#f-status'),Object.values(STATUS).map(x=>x[1]),st.status,cnt(r=>STATUS[r.status][1]));
+  chipGroup($('#f-ptype'),[...new Set(DATA.map(r=>r.provider_type))].filter(Boolean).sort(),st.ptype,cnt(r=>r.provider_type));
+  chipGroup($('#f-access'),[...new Set(DATA.map(r=>r._acc))].sort(),st.access,cnt(r=>r._acc));
+}
+$('#cats').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;st.cat=b.dataset.c||null;st.limit=60;render()});
+$('#q').addEventListener('input',e=>{st.q=e.target.value.trim();st.limit=60;render()});
+$('#sort').addEventListener('change',e=>{st.sort=e.target.value;render()});
+$('#more').addEventListener('click',()=>{st.limit+=60;render()});
+document.addEventListener('click',e=>{const b=e.target.closest('.copy');if(!b)return;const t=b.dataset.copy;try{navigator.clipboard.writeText(t).then(()=>{b.textContent='Kopierat';setTimeout(()=>b.textContent='Kopiera',1500)},()=>sel(b))}catch(_){sel(b)}});
+function sel(b){const c=b.previousElementSibling;const r=document.createRange();r.selectNodeContents(c);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Markerat'}
+function renderIdeas(){
+  const cats=[...new Set(IDEAS.map(i=>i.category))].sort();
+  $('#f-icat').innerHTML=[`<button aria-pressed="${!st.icat}" data-v="">Alla</button>`,...cats.map(c=>`<button aria-pressed="${st.icat===c}" data-v="${esc(c)}">${esc(c)}</button>`)].join('');
+  const f=IDEAS.filter(i=>!st.icat||i.category===st.icat);
+  $('#icount').textContent=`${f.length} idéer`;
+  $('#ideas').innerHTML=f.map(i=>`<article class="idea"><h4>${esc(i.title)}</h4><p class="pitch">${esc(i.pitch)}</p>
+   <div class="meta"><span class="b">${esc(i.category)}</span><span class="b">Värde: ${esc(i.value)}</span><span class="b">Svårighet: ${esc(i.difficulty)}</span><span class="b">${esc(i.audience)}</span></div>
+   <p class="small"><b>Problem idag:</b> ${esc(i.problem)}</p><p class="small"><b>Så kopplas datan:</b> ${esc(i.how)}</p>
+   ${i.exists_free?`<p class="small"><b>Finns gratis liknande:</b> ${esc(i.exists_free)}</p>`:''}
+   <div class="srcs">${(i.sources||[]).map(s=>byId[s]?`<button data-goto="${esc(s)}">${esc(byId[s].name)}</button>`:'').join('')}</div></article>`).join('');
+}
+$('#f-icat').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;st.icat=b.dataset.v||null;renderIdeas()});
+$('#ideas').addEventListener('click',e=>{const b=e.target.closest('[data-goto]');if(!b)return;const r=byId[b.dataset.goto];show('katalog');st.cat=null;st.q='';$('#q').value=r.name;st.q=r.name;render();setTimeout(()=>{const el=document.getElementById('p-'+r.id);if(el){el.scrollIntoView({block:'center'});el.querySelector('details').open=true}},50)});
+const VIEWS=['katalog','ideer','kopplingar','metod'];
+function show(v){VIEWS.forEach(x=>{$('#view-'+x).hidden=x!==v;$('#tab-'+x).setAttribute('aria-selected',x===v)});if(location.hash!=='#'+v)history.replaceState(null,'','#'+v)}
+document.querySelector('nav.tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(b.dataset.view)});
+window.addEventListener('hashchange',()=>{const v=location.hash.slice(1);if(VIEWS.includes(v))show(v)});
+let CATS=[];const PR=['myndighet','kommun/region','statligt bolag','universitet/forskning','ideell/community','företag','EU/internationell'];
+try{if(matchMedia('(max-width:860px)').matches)document.getElementById('fwrap').open=false}catch(_){}
+Promise.all([fetch('catalog.json').then(r=>r.json()),fetch('ideas.json').then(r=>r.json()).catch(()=>[]),fetch('meta.json').then(r=>r.json())]).then(([d,i,m])=>{
+  CATS=m.categories;
+  DATA=d.map(r=>({...r,_auth:authNorm(r.auth),_acc:accNorm(r.access),_ci:CATS.indexOf(r.category),_pr:PR.indexOf(r.provider_type)<0?9:PR.indexOf(r.provider_type),_hay:[r.name,r.provider,r.data,r.tips,r.use_cases,r.subcategory,r.endpoint,r.category].join(' ').toLowerCase()}));
+  DATA.forEach(r=>byId[r.id]=r);IDEAS=i;
+  const n=k=>DATA.filter(r=>r.status===k).length;
+  $('#stats').innerHTML=`<div><b>${DATA.length}</b><span>källor</span></div><div><b>${n('verifierad')+n('nyckel')}</b><span>svarar vid test</span></div><div><b>${DATA.filter(r=>r._auth==='Ingen nyckel').length}</b><span>utan nyckel</span></div><div><b>${IDEAS.length}</b><span>verktygsidéer</span></div>`;
+  $('#keys').innerHTML=m.keys_html;$('#method').innerHTML=m.method_html;
+  render();renderIdeas();const v=location.hash.slice(1);if(VIEWS.includes(v))show(v);
+}).catch(()=>{$('#list').innerHTML='<div class="empty">Katalogfilen kunde inte läsas in. Ladda om sidan.</div>'});
+</script>

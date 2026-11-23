@@ -1,0 +1,15 @@
+# Körs på hemservern från repo-roten:
+#   docker compose -f server/docker-compose.yml up -d --build
+# Datasette (webb + JSON-API): http://<server>:8001
+# MCP-server för Claude:       http://<server>:8002/mcp
+# Uppdatera innehållet: git pull  (MCP läser om data/ direkt; Datasette byggs om med --build)
+services:
+  datasette:
+    build: {context: .., dockerfile: server/Dockerfile.datasette}
+    ports: ["8001:8001"]
+    restart: unless-stopped
+  mcp:
+    build: {context: .., dockerfile: server/Dockerfile.mcp}
+    ports: ["8002:8002"]
+    volumes: ["../data:/data:ro"]
+    restart: unless-stopped

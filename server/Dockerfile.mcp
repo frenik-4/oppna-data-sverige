@@ -1,0 +1,8 @@
+FROM python:3.12-slim
+WORKDIR /app
+COPY mcp/requirements.txt mcp/requirements.txt
+RUN pip install --no-cache-dir -r mcp/requirements.txt
+COPY mcp/ mcp/
+ENV OPPNA_DATA_DIR=/data
+EXPOSE 8002
+CMD ["python3", "mcp/server.py", "--http", "--port", "8002"]
