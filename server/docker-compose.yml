@@ -2,14 +2,15 @@
 #   docker compose -f server/docker-compose.yml up -d --build
 # Datasette (webb + JSON-API): http://<server>:8001
 # MCP-server för Claude:       http://<server>:8002/mcp
+# Portar och bindning styrs via server/.env (se server/.env.example) om 8001/8002 är upptagna.
 # Uppdatera innehållet: git pull  (MCP läser om data/ direkt; Datasette byggs om med --build)
 services:
   datasette:
     build: {context: .., dockerfile: server/Dockerfile.datasette}
-    ports: ["8001:8001"]
+    ports: ["${ODS_BIND:-0.0.0.0}:${ODS_DATASETTE_PORT:-8001}:8001"]
     restart: unless-stopped
   mcp:
     build: {context: .., dockerfile: server/Dockerfile.mcp}
-    ports: ["8002:8002"]
+    ports: ["${ODS_BIND:-0.0.0.0}:${ODS_MCP_PORT:-8002}:8002"]
     volumes: ["../data:/data:ro"]
     restart: unless-stopped
