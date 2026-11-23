@@ -1176,5 +1176,26 @@
   "value": "medel",
   "audience": "privatperson",
   "category": "Boende & fastighet"
+ },
+ {
+  "id": "I61",
+  "title": "Lokal händelsekarta för Halland (egen Kommunkartan light)",
+  "pitch": "Bygglov, detaljplaner, nämndbeslut, vägarbeten och polishändelser i dina kommuner på en karta, med bevakning på adress eller område, direkt från ursprungskällorna.",
+  "problem": "Kommunkartan tar 199 kr/mån för API-åtkomst till färska händelser, och gratisnivån visar bara händelser äldre än 90 dagar. Deras villkor förbjuder att man återanvänder deras sammanställning, men ursprungskällorna är offentliga.",
+  "sources": [
+   "G465",
+   "G467",
+   "G472",
+   "D485",
+   "E281",
+   "C475",
+   "C484"
+  ],
+  "how": "Börja med Halmstad, Varberg, Falkenberg, Kungsbacka, Laholm och Hylte: identifiera anslagstavlans plattform per kommun och skriv en parser per plattform. Geokoda fastighetsbeteckningen mot kommunens detaljplanelager eller Lantmäteriet. Lägg till Trafikverkets vägarbeten (Situation, med koordinater) och Polisens händelser filtrerade på län. Personnamn i bygglovsanslag filtreras bort innan något sparas.",
+  "difficulty": "medel",
+  "value": "hög",
+  "audience": "privatperson",
+  "category": "Boende & fastighet",
+  "exists_free": "Kommunkartan (gratisnivån visar bara händelser äldre än 90 dagar)"
  }
 ]

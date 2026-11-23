@@ -6,8 +6,8 @@ Det här repot är den enda källan. Andra projekt (CCounter, MyHome, ATG m.fl.)
 
 | | |
 |---|---|
-| Källor | 514, i 18 kategorier |
-| Verktygsidéer | 60, som kombinerar flera källor |
+| Källor | 541, i 18 kategorier |
+| Verktygsidéer | 61, som kombinerar flera källor |
 | Senast fulltestad | 2026-11-22 |
 
 ## Innehåll
