@@ -42,6 +42,8 @@ docker compose -f server/docker-compose.yml up -d --build
   - `/oppna_data?sql=select+name,endpoint+from+kallor+where+auth+like+'ingen%25'`
 - **MCP-servern** på `http://<server>:8002/mcp`.
 
+Är port 8001 eller 8002 redan upptagen: kopiera `server/.env.example` till `server/.env` och välj andra portar (`ODS_DATASETTE_PORT`, `ODS_MCP_PORT`). Med `ODS_BIND` kan tjänsterna bindas till enbart Tailscale-IP:n.
+
 Håll servern uppdaterad med en cron-rad. Skriptet gör `git pull` och bygger om Datasette bara om något har ändrats:
 
 ```
