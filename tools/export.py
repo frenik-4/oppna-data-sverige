@@ -21,7 +21,7 @@ cat = json.loads((DATA / "catalog.json").read_text(encoding="utf-8"))
 ideas = json.loads((DATA / "ideas.json").read_text(encoding="utf-8"))
 names = {r["id"]: r["name"] for r in cat}
 
-cols = ["id", "category", "subcategory", "name", "provider", "provider_type", "status", "auth",
+cols = ["id", "category", "subcategory", "name", "provider", "provider_type", "status", "auth", "env_var",
         "access", "license", "update_frequency", "url", "endpoint", "example", "data",
         "use_cases", "tips", "note", "last_checked"]
 

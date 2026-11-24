@@ -6,7 +6,7 @@ Det här repot är den enda källan. Andra projekt (CCounter, MyHome, ATG m.fl.)
 
 | | |
 |---|---|
-| Källor | 541, i 18 kategorier |
+| Källor | 566, i 18 kategorier |
 | Verktygsidéer | 61, som kombinerar flera källor |
 | Senast fulltestad | 2026-11-22 |
 
@@ -90,9 +90,21 @@ Kopiera inte `catalog.json` in i andra repon, för då glider kopiorna isär. Be
 | `category` | En av kategorierna i `data/meta.json`. |
 | `status` | `verifierad`, `nyckel` (svarar men kräver nyckel), `blockerad` (blockerar molnservrar men bekräftad), `overifierad`, `stängd` (ej öppen). |
 | `auth` | `ingen`, `gratis API-nyckel`, `registrering/avtal` eller `delvis`. |
+| `env_var` | Namnet på miljövariabeln som nyckeln ska ligga i, t.ex. `TRAFIKVERKET_API_KEY`. Samma namn i alla projekt. Själva nyckeln finns aldrig i repot. |
 | `url` / `endpoint` / `example` | Dokumentation, API-bas och ett konkret exempelanrop. |
 | `data` / `use_cases` / `tips` | Vad du får ut, vad det kan användas till, och praktiska ingångar och fallgropar. |
 | `last_checked` | Datum för senaste automatiska test. |
+
+## API-nycklar
+
+Nycklar committas aldrig. De ligger på hemservern i `~/.config/oppna-data/keys.env` (rättigheter 600), och fältet `env_var` i katalogen talar om vilket variabelnamn varje källa använder:
+
+```
+TRAFIKVERKET_API_KEY=...
+AISSTREAM_API_KEY=...
+```
+
+Docker-projekt läser filen med `env_file: /home/lucky9/.config/oppna-data/keys.env`. Skript och lokala Claude-sessioner får variablerna via `set -a; . ~/.config/oppna-data/keys.env; set +a` i `~/.bashrc`. Trafikverkets och aisstreams nycklar skickas i själva anropet (XML-frågan respektive första WebSocket-meddelandet), så de kan inte läggas in via molnsessionernas proxy.
 
 ## Uppdatera katalogen
 
