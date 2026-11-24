@@ -26,6 +26,8 @@ lokal klon. **Kopiera aldrig `data/catalog.json` in i andra repon.**
   `python3 tools/verify.py --ids <id>`.
 - Inga källor med persondata om privatpersoner, inget som kräver BankID eller betalning.
 - Odokumenterade JSON-anrop bakom webbplatser markeras tydligt som inofficiella i `tips`.
+- Källor som kräver nyckel får `env_var` (VERSALER_MED_UNDERSTRECK). Återanvänd
+  befintligt namn för samma tjänst. Nycklar committas aldrig.
 - Kör `python3 tools/validate.py` före commit.
 
 ## Kända fallgropar

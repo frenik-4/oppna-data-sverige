@@ -5,6 +5,7 @@ Körs i CI på varje PR. Ingen extern dependency (inget jsonschema-paket) så at
 den går att köra var som helst.
 """
 import json
+import re
 import pathlib
 import sys
 
@@ -40,6 +41,11 @@ for r in cat:
                 errors.append(f"{rid}: 'formats' ska vara en lista")
         elif v is not None and not isinstance(v, str):
             errors.append(f"{rid}: fältet '{k}' ska vara text, är {type(v).__name__}")
+    ev = r.get("env_var")
+    if ev and not re.fullmatch(r"[A-Z][A-Z0-9_]*", ev):
+        errors.append(f"{rid}: env_var '{ev}' ska vara VERSALER_MED_UNDERSTRECK")
+    if ev and not any(w in (r.get("auth") or "").lower() for w in ("nyckel", "registrering", "avtal", "delvis")):
+        errors.append(f"{rid}: env_var satt men auth anger inget nyckelkrav")
     if r.get("url") and not str(r["url"]).startswith("http"):
         errors.append(f"{rid}: url börjar inte med http")
 

@@ -32,7 +32,7 @@ def _load(name):
 
 
 def _short(r):
-    return {k: r.get(k) for k in ("id", "name", "provider", "category", "status", "auth", "access", "endpoint", "data")}
+    return {k: r.get(k) for k in ("id", "name", "provider", "category", "status", "auth", "env_var", "access", "endpoint", "data")}
 
 
 def _match(r, words):
